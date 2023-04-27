@@ -21,11 +21,13 @@ namespace Project.Api.Controllers
     [ApiController]
     public class CustomersController : ControllerBase
     {
-        private readonly ProjectApiContext _context;
+        private readonly IdentityServerContext _context;
+        private readonly ILogger<CustomersController> _logger;
 
-        public CustomersController(ProjectApiContext context)
+        public CustomersController(IdentityServerContext context, ILogger<CustomersController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         // GET: api/Customers
@@ -33,6 +35,7 @@ namespace Project.Api.Controllers
 
         public async Task<ActionResult<IEnumerable<User>>> GetCustomer()
         {
+            _logger.LogInformation("user came in");
             //to get claims from token
             string tokenStr = HttpContext.Request.Headers["Authorization"];
             var token = tokenStr.Split(' ')[1];
@@ -40,6 +43,7 @@ namespace Project.Api.Controllers
             var jsonToken = handler.ReadToken(token);
             var tokenS = jsonToken as JwtSecurityToken;
             var userId = tokenS.Claims.First(claim => claim.Type == "UserId").Value;
+            var roles = tokenS.Claims.First(claim => claim.Type == "Roles");
             //
 
 

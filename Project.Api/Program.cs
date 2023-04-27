@@ -1,8 +1,25 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Project.Api.Models;
+using Serilog;
+using Serilog.Core;
+using Serilog.Sinks.MSSqlServer;
 
 var builder = WebApplication.CreateBuilder(args);
+
+#region Serilog Configs
+
+var logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .Enrich.FromLogContext()
+    .CreateLogger();
+
+builder.Logging.ClearProviders();
+builder.Logging.AddSerilog(logger);
+
+
+
+#endregion
 
 // Add services to the container.
 
@@ -11,20 +28,22 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+#region Identity Server 4 Configs for api source project
+
 builder.Services.AddAuthentication("Bearer")
     .AddIdentityServerAuthentication(options =>
     {
         options.Authority = "http://localhost:5000";
-        options.RequireHttpsMetadata= false;
+        options.RequireHttpsMetadata = false;
         options.ApiName = "projectApi";
         options.LegacyAudienceValidation = true;
     });
 
+#endregion
 
-builder.Services.AddDbContext<ProjectApiContext>(option =>
-{
-    option.UseSqlServer("Server=.;Database=IdentityServer;Integrated Security=true;Encrypt=False;MultipleActiveResultSets=True;TrustServerCertificate=True;");
-});
+
+
+builder.Services.AddDbContext<IdentityServerContext>();
 
 var app = builder.Build();
 
