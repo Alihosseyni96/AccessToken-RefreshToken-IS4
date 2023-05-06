@@ -1,0 +1,18 @@
+﻿@using ProjectMVC.Data.Models.ViewModels;
+@model SignInViewModel;
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+
+<form method="post" action="/UserSignIn/UserSignIn">
+    <label class="input_label">
+        <span class="input__label-content">کد ملی خود را وارد کنید  </span>
+    </label>
+
+    <input type="text" class="input_field"  asp-for="NationalCode"/>
+
+    <input type="submit" class="btn btn-success" />
+</form>

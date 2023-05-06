@@ -1,6 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Project.Api.Models;
+using ProjectApi.Data.Models.Data;
+using ProjectApi.Data.Models.IRepositories;
+using ProjectApi.Data.Models.Repositories;
+using ProjectApi.Data.Models.Services;
 using Serilog;
 using Serilog.Core;
 using Serilog.Sinks.MSSqlServer;
@@ -35,7 +38,7 @@ builder.Services.AddAuthentication("Bearer")
     {
         options.Authority = "http://localhost:5000";
         options.RequireHttpsMetadata = false;
-        options.ApiName = "projectApi";
+        //options.ApiName = "projectApi";
         options.LegacyAudienceValidation = true;
     });
 
@@ -43,7 +46,13 @@ builder.Services.AddAuthentication("Bearer")
 
 
 
-builder.Services.AddDbContext<IdentityServerContext>();
+builder.Services.AddDbContext<ProjectApiContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration["ConnectionString:ProjectApiConnectionString"]);
+});
+builder.Services.AddScoped<IPersonRepository, PersonRepository>();
+builder.Services.AddScoped<IPersonServices, PersonServices>();
+
 
 var app = builder.Build();
 
@@ -55,7 +64,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

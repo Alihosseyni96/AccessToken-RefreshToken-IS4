@@ -8,7 +8,7 @@ using System.Security.Cryptography.X509Certificates;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<IdentityServerContext>(options =>
+builder.Services.AddDbContext<ProjectApiContext>(options =>
 {
     options.UseSqlServer();
 });
@@ -18,10 +18,10 @@ builder.Services.AddIdentityServer()
     .AddInMemoryIdentityResources(Config.GetIdentityResources())
     .AddInMemoryApiResources(Config.GetAllApiResources())
     .AddInMemoryClients(Config.GetClients())
-    .AddInMemoryApiScopes(Config.GetScope())    
+    .AddInMemoryApiScopes(Config.GetScope())
     .AddResourceOwnerValidator<CustomResourceOwnerPasswordValidator>()
     .AddProfileService<ProfileService>();
-    
+
 
 
 

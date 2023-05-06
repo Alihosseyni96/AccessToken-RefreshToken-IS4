@@ -8,10 +8,10 @@ using System.Security.Claims;
 
 public class ProfileService : IProfileService
 {
-    private readonly IdentityServerContext _db;
+    private readonly ProjectApiContext _db;
 
 
-    public ProfileService(IdentityServerContext db)
+    public ProfileService(ProjectApiContext db)
     {
         _db = db;
     }
@@ -19,25 +19,13 @@ public class ProfileService : IProfileService
     public async Task GetProfileDataAsync(ProfileDataRequestContext context)
     {
 
-        var user = await _db.Users.Where(x => x.Id == long.Parse(context.Subject.GetSubjectId())).Include(x => x.UserRoles).ThenInclude(x => x.Role).SingleAsync();
+        var user = await _db.People.Where(x => x.Id == long.Parse(context.Subject.GetSubjectId())).SingleAsync();
 
-        var roles = user.UserRoles.Select(x=> x.Role.Name);
-        string[] rolesArray = new string[roles.Count()];
-        int i = 0;
-        if (roles.Count()> 0)
-        {
-            foreach (var role in roles)
-            {
-                rolesArray[i] = role;
-                i++;
-            }
-        }
 
         List < Claim> claims = new List<Claim>()
         {
             new Claim("UserId" ,  user.Id.ToString()),
-            new Claim("UserName" , user.UserName),
-            new Claim("Roles" , string.Join("-" , rolesArray))
+            new Claim("NationalCode" , user.NationalCode)
             
         };
         context.IssuedClaims.AddRange(claims);

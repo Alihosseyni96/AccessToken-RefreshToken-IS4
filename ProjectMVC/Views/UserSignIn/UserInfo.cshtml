@@ -1,0 +1,32 @@
+﻿@using ProjectMVC.Data.Models.ViewModels;
+@model ResultViewModel
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+
+<div>
+    <h3>اطلاعات کلی شخص</h3>
+    <h6>اطلاعات شخصی</h6>
+    <ul>
+        <li>نام: @Model.UserInfo.FirstName</li>
+        <li> نام خانوادگی:@Model.UserInfo.LastName</li>
+        <li> نام پدر:@Model.UserInfo.FatherName</li>
+        <li> کد ملی :@Model.UserInfo.NationalCode</li>
+        <li> آدرس:@Model.UserInfo.Address</li>
+        <li> تاریخ تولد: @Model.UserInfo.BirthDate</li>
+    </ul>
+    <h3>اطلاعات سفر ها</h3>
+    @foreach (var item in Model.Travels)
+    {
+        <ul>
+            <li> تاریخ برگشت: @item.ReturnDate</li>
+            <li> مقصد:@item.Destenition</li>
+            <li>تاریخ ررفت@item.DepartedDate</li>
+            <li> مبدا: @item.Origin</li>
+
+        </ul>
+    }
+</div>
